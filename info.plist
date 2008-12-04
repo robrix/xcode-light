@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>name</key>
+	<string>Xcode Light</string>
+	<key>ordering</key>
+	<array>
+		<string>64D675AB-CEB0-42F8-B7D3-6157AA32636A</string>
+		<string>DC127A9D-9020-4370-A635-14FB87C0F806</string>
+		<string>62D5320A-068C-4114-8667-455D058550EC</string>
+		<string>4DB91123-15DA-4F0B-BD1A-4517E2C98351</string>
+	</array>
+	<key>uuid</key>
+	<string>339549AD-0695-455C-BF19-A30832DFA172</string>
+</dict>
+</plist>
