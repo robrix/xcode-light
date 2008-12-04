@@ -5,5 +5,4 @@ require "project"
 
 with Project.select_project do |project|
 	project.run
-	puts "Running #{project.name}"
 end

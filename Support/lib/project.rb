@@ -1,7 +1,10 @@
+require "#{ENV['TM_SUPPORT_PATH']}/lib/tm/detach.rb"
+require "#{ENV['TM_SUPPORT_PATH']}/lib/ui.rb"
+
+
 def with(object, &block)
 	yield object if object
 end
-
 
 
 class Project
@@ -37,11 +40,22 @@ class Project
 	
 	
 	def build
-		%x{osascript -e 'tell application "Xcode" to tell project "#{self.name}" to build'}
+		TextMate.detach {
+			%x{osascript -e 'tell application "Xcode" to tell project "#{self.name}" to build'}
+			%x{osascript -e 'tell application "TextMate" to show tooltip "ha ha ha"'}
+		}
 	end
 	
 	def run
-		%x{osascript -e 'tell application "Xcode" to tell project "#{self.name}" to launch'}
+		TextMate.detach {
+			%x{osascript -e 'tell application "Xcode"' -e 'activate' -e 'tell project "#{self.name}" to launch' -e 'end tell' &}
+		}
+	end
+	
+	def clean
+		TextMate.detach {
+			%x{osascript -e 'tell application "Xcode" to tell project "#{self.name}" to clean' &}
+		}
 	end
 	
 	
