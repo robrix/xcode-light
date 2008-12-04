@@ -6,6 +6,7 @@ require "project"
 
 with Project.select_project do |project|
 	TextMate.detach do
-		project.clean
+		project.build
+		project.run
 	end
 end
