@@ -5,18 +5,18 @@
 	<key>beforeRunningCommand</key>
 	<string>nop</string>
 	<key>command</key>
-	<string>"$TM_BUNDLE_SUPPORT/bin/build_and_run.rb"</string>
+	<string>"$TM_BUNDLE_SUPPORT/bin/open.rb"</string>
 	<key>input</key>
 	<string>none</string>
 	<key>keyEquivalent</key>
-	<string>@r</string>
+	<string>~@</string>
 	<key>name</key>
-	<string>Build and Run</string>
+	<string>Open Project</string>
 	<key>output</key>
 	<string>showAsTooltip</string>
 	<key>scope</key>
 	<string>source.c, source.c++, source.objc, source.objc++</string>
 	<key>uuid</key>
-	<string>62D5320A-068C-4114-8667-455D058550EC</string>
+	<string>8C771ED7-DA01-45AF-9CF7-840674F3B148</string>
 </dict>
 </plist>

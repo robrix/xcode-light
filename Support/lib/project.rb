@@ -35,6 +35,11 @@ class Project
 	end
 	
 	
+	def open
+		%x{osascript -e 'tell application "Xcode" to open POSIX file "#{self.path}"'}
+	end
+	
+	
 	def build
 		%x{osascript -e 'tell application "Xcode" to tell project "#{self.name}" to build'}
 	end
@@ -46,6 +51,9 @@ class Project
 	def clean
 		%x{osascript -e 'tell application "Xcode" to tell project "#{self.name}" to clean' &}
 	end
+	
+	
+	
 	
 	
 	private
