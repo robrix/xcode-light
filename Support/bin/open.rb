@@ -10,11 +10,3 @@ with Project.select_project do |project|
 		TextMate::UI.tool_tip project.open
 	end
 end
-
-=begin
-tell application "Xcode"
-    tell project "SampleApp"
-        make new file reference at end of group "Classes" with properties {full path:"/Volumes/Local/bar.m", name:"bar.m"}
-    end tell
-end tell
-=end
