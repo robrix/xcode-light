@@ -1,5 +1,13 @@
+require "apple_script"
+
 def with(object, &block)
 	yield object if object
+end
+
+class Symbol
+	def to_proc
+		proc { |object, *args| object.send self, *args }
+	end
 end
 
 
@@ -37,20 +45,29 @@ module Xcode
 
 
 		def open
-			%x{osascript -e 'tell application "Xcode" to open POSIX file "#{self.path}"'}
+			AppleScript::Script.new.tell_application "Xcode" do |xcode|
+				xcode.open %Q{POSIX file "#{self.path}"}
+			end.run
 		end
 
 
 		def build
-			%x{osascript -e 'tell application "Xcode" to tell project "#{self.name}" to build'}
+			AppleScript::Script.new.tell_application "Xcode" do |xcode|
+				xcode.tell_project self.name, &:build
+			end.run
 		end
 
 		def run
-			%x{osascript -e 'tell application "Xcode"' -e 'activate' -e 'tell project "#{self.name}" to launch' -e 'end tell' &}
+			AppleScript::Script.new.tell_application "Xcode" do |xcode|
+				xcode.activate
+				xcode.tell_project self.name, &:launch
+			end.run
 		end
 
 		def clean
-			%x{osascript -e 'tell application "Xcode" to tell project "#{self.name}" to clean' &}
+			AppleScript::Script.new.tell_application "Xcode" do |xcode|
+				xcode.tell_project self.name, &:clean
+			end.run
 		end
 
 
@@ -89,22 +106,22 @@ module Xcode
 
 
 		# add the files to this group in the project
-		# TODO: add it in alphabetical order?
-		# TODO: give the file reference utf8 encoding?
-		def <<(paths)
-			paths = [paths] unless paths.is_a? Array
-			commands = []
-			paths.each do |path|
-				name = File.basename(path)
-				commands << %Q{-e 'set file_path to "#{path}" as POSIX file as alias'}
-				commands << %Q{-e 'make new file reference at end of group "#{self.name}" with properties {full path:file_path, name:name of (info for file_path)}'}
-				unless File.extname(name) == ".h"
-					commands << %Q{-e 'set compile_id to (id of compile sources phase of active target)'}
-					commands << %Q{-e 'add file reference (name of (info for file_path)) to (build phase id compile_id) of active target'}
+		def <<(*paths)
+			# TODO: add it in alphabetical order?
+			# TODO: give the file reference utf8 encoding?
+			paths.flatten!
+			AppleScript::Script.new.tell_application "Xcode" do |xcode|
+				xcode.tell_project self.project.name do |project|
+					paths.each do |path|
+						project.file_path = %Q{"#{path}" as POSIX file as alias}
+						project << %Q{make new file reference at end of group "#{self.name}" with properties {full path:file_path, name:name of (info for file_path)}}
+						unless File.extname(path) == ".h"
+							project.compile_id = %Q{id of compile sources phase of active target}
+							project << %Q{add file reference (name of (info for file_path)) to (build phase id compile_id) of active target}
+						end
+					end
 				end
-			end
-			%x{osascript -e 'tell application "Xcode"' -e 'tell project "#{self.project.name}"' #{commands.join(" ")} -e 'end tell' -e 'end tell'}
-			# paths.collect { |path| File.basename path }.join(", ")
+			end.run
 		end
 	end
 end
