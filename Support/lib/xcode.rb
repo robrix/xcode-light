@@ -107,8 +107,6 @@ module Xcode
 
 		# add the files to this group in the project
 		def <<(*paths)
-			# TODO: add it in alphabetical order?
-			# TODO: give the file reference utf8 encoding?
 			paths.flatten!
 			AppleScript::Script.new.tell_application "Xcode" do |xcode|
 				xcode.tell_project self.project.name do |project|
