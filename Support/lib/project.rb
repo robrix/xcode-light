@@ -1,3 +1,4 @@
+# TODO: put this into an Xcode module, and rename the file to xcode.rb
 def with(object, &block)
 	yield object if object
 end
@@ -53,11 +54,56 @@ class Project
 	end
 	
 	
-	
+	def groups
+		GroupProxy.new(self)
+	end
 	
 	
 	private
 	def self.name_for_path(path)
 		File.basename(path, ".xcodeproj")
+	end
+end
+
+
+class GroupProxy
+	attr_reader :project
+	
+	def initialize(project)
+		@project = project
+	end
+	
+	
+	def [](name)
+		Group.new(project, name)
+	end
+end
+
+class Group
+	attr_reader :name, :project
+	
+	def initialize(project, name)
+		@project = project
+		@name = name
+	end
+	
+	
+	# add the files to this group in the project
+	# TODO: add it in alphabetical order?
+	# TODO: give the file reference utf8 encoding?
+	def <<(paths)
+		paths = [paths] unless paths.is_a? Array
+		commands = []
+		paths.each do |path|
+			name = File.basename(path)
+			commands << %Q{-e 'set file_path to "#{path}" as POSIX file as alias'}
+			commands << %Q{-e 'make new file reference at end of group "#{self.name}" with properties {full path:file_path, name:name of (info for file_path)}'}
+			unless File.extname(name) == ".h"
+				commands << %Q{-e 'set compile_id to (id of compile sources phase of active target)'}
+				commands << %Q{-e 'add file reference (name of (info for file_path)) to (build phase id compile_id) of active target'}
+			end
+		end
+		%x{osascript -e 'tell application "Xcode"' -e 'tell project "#{self.project.name}"' #{commands.join(" ")} -e 'end tell' -e 'end tell'}
+		# paths.collect { |path| File.basename path }.join(", ")
 	end
 end
