@@ -12,7 +12,7 @@ end
 
 
 module Xcode
-	# TODO: provide access to a list of targets
+	# TODO: provide access to a list of targets, by default using the active target
 	class Project
 		def self.select_project
 			if ENV['TM_XCODE_PROJECT']
