@@ -75,6 +75,23 @@ module Xcode
 		def groups
 			GroupProxy.new(self)
 		end
+		
+		
+		def targets
+			AppleScript::Script.new.tell_application "Xcode" do |xcode|
+				xcode.tell_project self.name do |project|
+					project.get "name of targets"
+				end
+			end.run.strip.split(", ")
+		end
+		
+		def active_target=(target)
+			AppleScript::Script.new.tell_application "Xcode" do |xcode|
+				xcode.tell_project self.name do |project|
+					project["active target"] = %Q{target "#{target}"}
+				end
+			end.run
+		end
 
 
 		private
