@@ -110,7 +110,9 @@ module Xcode
 
 
 		def [](name)
-			Group.new(project, name)
+			if AppleScript::Script.new.tell_application("Xcode") { |xcode| xcode.tell_project(self.project.name) { |project| project << %Q{group "#{name}" exists} } }.run
+				Group.new(project, name)
+			end
 		end
 	end
 
