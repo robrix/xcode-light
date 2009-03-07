@@ -9,7 +9,7 @@
 	<key>input</key>
 	<string>none</string>
 	<key>keyEquivalent</key>
-	<string>~@T</string>
+	<string>@X</string>
 	<key>name</key>
 	<string>Select Target</string>
 	<key>output</key>
