@@ -53,7 +53,14 @@ module AppleScript
 		end
 
 		def run
-			%x{#{self.to_command}}
+			case result = %x{#{self.to_command}}.strip
+			when "true"
+				true
+			when "false"
+				false
+			else
+				result
+			end
 		end
 		
 	protected
