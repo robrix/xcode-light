@@ -10,6 +10,7 @@ require "xcode"
 with Xcode::Project.select_project do |project|
 	TextMate.detach do
 		result = with(TextMate.selected_files || [ENV["TM_FILEPATH"]]) do |files|
+			files = [ENV["TM_FILEPATH"]] if files == [ENV["TM_PROJECT_DIRECTORY"]] # don’t freak out if the drawer’s selection is the project directory.
 			if files
 				files_by_parent_folder = {}
 				files.collect do |file|
